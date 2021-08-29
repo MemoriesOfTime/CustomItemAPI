@@ -1,6 +1,7 @@
 package cn.lanink.customitemapi;
 
 import cn.lanink.customitemapi.item.ItemCustom;
+import cn.lanink.customitemapi.network.protocol.ItemComponentPacket;
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -10,7 +11,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.RuntimeItemMapping;
 import cn.nukkit.item.RuntimeItems;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.ItemComponentPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.network.protocol.ResourcePackStackPacket;
 import cn.nukkit.plugin.PluginBase;
@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * @author LT_Name
