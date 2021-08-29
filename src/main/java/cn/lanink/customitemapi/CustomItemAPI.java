@@ -1,8 +1,6 @@
 package cn.lanink.customitemapi;
 
 import cn.lanink.customitemapi.item.ItemCustom;
-import cn.lanink.customitemapi.network.protocol.ItemComponentPacket;
-import cn.lanink.customitemapi.network.protocol.ResourcePackStackPacket;
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
@@ -12,6 +10,9 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.RuntimeItemMapping;
 import cn.nukkit.item.RuntimeItems;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.ItemComponentPacket;
+import cn.nukkit.network.protocol.ProtocolInfo;
+import cn.nukkit.network.protocol.ResourcePackStackPacket;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.BinaryStream;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -28,7 +29,6 @@ import java.util.Random;
 public class CustomItemAPI extends PluginBase implements Listener {
 
     public static final String VERSION = "?";
-    public static final Random RANDOM = new Random();
     private static CustomItemAPI customItemAPI;
 
     private final HashMap<Integer, Class<? extends Item>> customItems = new HashMap<>();
@@ -53,6 +53,10 @@ public class CustomItemAPI extends PluginBase implements Listener {
     }
 
     public void registerCustomItem(int id, @NotNull Class<? extends ItemCustom> c) {
+        this.registerCustomItem(id, c, ProtocolInfo.v1_17_10);
+    }
+
+    public void registerCustomItem(int id, @NotNull Class<? extends ItemCustom> c, int protocol) {
         this.customItems.put(id, c);
         Item.list[id] = c;
 
@@ -61,19 +65,19 @@ public class CustomItemAPI extends PluginBase implements Listener {
 
             Field runtime2LegacyField = runtimeItemMappingClass.getDeclaredField("runtime2Legacy");
             runtime2LegacyField.setAccessible(true);
-            Int2ObjectMap<RuntimeItemMapping.LegacyEntry> runtime2Legacy = (Int2ObjectMap<RuntimeItemMapping.LegacyEntry>) runtime2LegacyField.get(RuntimeItems.getMapping());
+            Int2ObjectMap<RuntimeItemMapping.LegacyEntry> runtime2Legacy = (Int2ObjectMap<RuntimeItemMapping.LegacyEntry>) runtime2LegacyField.get(RuntimeItems.getMapping(protocol));
 
             Field legacy2RuntimeField = runtimeItemMappingClass.getDeclaredField("legacy2Runtime");
             legacy2RuntimeField.setAccessible(true);
-            Int2ObjectMap<RuntimeItemMapping.RuntimeEntry> legacy2Runtime = (Int2ObjectMap<RuntimeItemMapping.RuntimeEntry>) legacy2RuntimeField.get(RuntimeItems.getMapping());
+            Int2ObjectMap<RuntimeItemMapping.RuntimeEntry> legacy2Runtime = (Int2ObjectMap<RuntimeItemMapping.RuntimeEntry>) legacy2RuntimeField.get(RuntimeItems.getMapping(protocol));
 
             Field identifier2LegacyField = runtimeItemMappingClass.getDeclaredField("identifier2Legacy");
             identifier2LegacyField.setAccessible(true);
-            Map<String, RuntimeItemMapping.LegacyEntry> identifier2Legacy = (Map<String, RuntimeItemMapping.LegacyEntry>) identifier2LegacyField.get(RuntimeItems.getMapping());
+            Map<String, RuntimeItemMapping.LegacyEntry> identifier2Legacy = (Map<String, RuntimeItemMapping.LegacyEntry>) identifier2LegacyField.get(RuntimeItems.getMapping(protocol));
 
 
             ItemCustom item = (ItemCustom) Item.get(id);
-            int fullId = RuntimeItems.getMapping().getFullId(item.getId(), 0);
+            int fullId = RuntimeItems.getMapping(protocol).getFullId(item.getId(), 0);
 
             RuntimeItemMapping.LegacyEntry legacyEntry = new RuntimeItemMapping.LegacyEntry(item.getId(), false, 0);
             runtime2Legacy.put(item.getId(), legacyEntry);
@@ -84,16 +88,16 @@ public class CustomItemAPI extends PluginBase implements Listener {
         } catch (Exception e) {
             this.getLogger().error("register custom item error!", e);
         }
-        this.generatePalette();
+        this.generatePalette(protocol);
     }
 
-    private void generatePalette() {
+    private void generatePalette(int protocol) {
         try {
             Class<RuntimeItemMapping> runtimeItemMappingClass = RuntimeItemMapping.class;
             Field legacy2RuntimeField = runtimeItemMappingClass.getDeclaredField("legacy2Runtime");
             legacy2RuntimeField.setAccessible(true);
             Int2ObjectMap<RuntimeItemMapping.RuntimeEntry> legacy2Runtime =
-                    (Int2ObjectMap<RuntimeItemMapping.RuntimeEntry>) legacy2RuntimeField.get(RuntimeItems.getMapping());
+                    (Int2ObjectMap<RuntimeItemMapping.RuntimeEntry>) legacy2RuntimeField.get(RuntimeItems.getMapping(protocol));
 
             BinaryStream paletteBuffer = new BinaryStream();
             paletteBuffer.putUnsignedVarInt(legacy2Runtime.size());
@@ -114,7 +118,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
 
             Field itemPaletteField = runtimeItemMappingClass.getDeclaredField("itemPalette");
             itemPaletteField.setAccessible(true);
-            itemPaletteField.set(RuntimeItems.getMapping(), paletteBuffer.getBuffer());
+            itemPaletteField.set(RuntimeItems.getMapping(protocol), paletteBuffer.getBuffer());
         } catch (Exception e) {
             this.getLogger().error("generate palette error!", e);
         }
@@ -148,20 +152,15 @@ public class CustomItemAPI extends PluginBase implements Listener {
 
     @EventHandler
     public void onDataPacketSend(DataPacketSendEvent event) {
-        if (event.getPacket() instanceof cn.nukkit.network.protocol.ResourcePackStackPacket && !(event.getPacket() instanceof ResourcePackStackPacket)) {
-            cn.nukkit.network.protocol.ResourcePackStackPacket oldPk = (cn.nukkit.network.protocol.ResourcePackStackPacket) event.getPacket();
-            ResourcePackStackPacket pk = new ResourcePackStackPacket();
-            pk.mustAccept = oldPk.mustAccept;
-            pk.behaviourPackStack = oldPk.behaviourPackStack;
-            pk.resourcePackStack = oldPk.resourcePackStack;
+        if (event.getPacket() instanceof ResourcePackStackPacket) {
+            ResourcePackStackPacket pk = (ResourcePackStackPacket) event.getPacket();
             pk.experiments.add(
                     new ResourcePackStackPacket.ExperimentData("data_driven_items", true)
             );
             pk.experiments.add(
                     new ResourcePackStackPacket.ExperimentData("experimental_custom_ui", true)
             );
-            event.setCancelled(true);
-            event.getPlayer().dataPacket(pk);
+            pk.encode();
         }
 
     }
