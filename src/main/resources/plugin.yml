@@ -1,6 +1,6 @@
 name: CustomItemAPI
 main: cn.lanink.customitemapi.CustomItemAPI
-version: "1.0.0"
+version: "1.0.1"
 api: ["1.0.11"]
 load: STARTUP
 author: "LT_Name"

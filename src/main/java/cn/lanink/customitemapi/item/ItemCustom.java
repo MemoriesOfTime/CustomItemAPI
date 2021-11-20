@@ -44,12 +44,12 @@ public abstract class ItemCustom extends Item {
         CompoundTag data = new CompoundTag();
         data.putCompound("components", new CompoundTag()
                 .putCompound("item_properties", new CompoundTag()
+                        .putCompound("minecraft:icon", new CompoundTag()
+                                .putString("texture", this.getTextureName() != null ? this.getTextureName() : this.name))
                         .putBoolean("allow_off_hand", this.allowOffHand())
                         .putBoolean("hand_equipped", this.isTool())
                         .putInt("creative_category", this.getCreativeCategory())
                         .putInt("max_stack_size", this.getMaxStackSize()))
-                .putCompound("minecraft:icon", new CompoundTag()
-                        .putString("texture", this.getTextureName() != null ? this.getTextureName() : this.name))
         );
         return data;
     }
