@@ -138,7 +138,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
             }
 
             ItemCustom itemCustom = (ItemCustom) item;
-            CompoundTag data = itemCustom.getComponentsData();
+            CompoundTag data = itemCustom.getComponentsData(player.protocol);
             data.putShort("minecraft:identifier", i);
 
             itemComponentPacket.entries[i] = new ItemComponentPacket.Entry(item.getName(), data);
