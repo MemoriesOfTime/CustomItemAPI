@@ -102,17 +102,10 @@ public class CustomItemAPI extends PluginBase implements Listener {
             paletteBuffer.putUnsignedVarInt(legacy2Runtime.size());
 
             for (RuntimeItemMapping.RuntimeEntry entry : legacy2Runtime.values()) {
-                if (this.customItems.containsKey(entry.getRuntimeId())) {
-                    paletteBuffer.putString(entry.getIdentifier());
-                    paletteBuffer.putLShort(entry.getRuntimeId());
-                    // Component item
-                    paletteBuffer.putBoolean(true);
-                }else {
-                    paletteBuffer.putString(entry.getIdentifier());
-                    paletteBuffer.putLShort(entry.getRuntimeId());
-                    // Component item
-                    paletteBuffer.putBoolean(false);
-                }
+                paletteBuffer.putString(entry.getIdentifier());
+                paletteBuffer.putLShort(entry.getRuntimeId());
+                // Component item
+                paletteBuffer.putBoolean(this.customItems.containsKey(entry.getRuntimeId()));
             }
 
             Field itemPaletteField = runtimeItemMappingClass.getDeclaredField("itemPalette");

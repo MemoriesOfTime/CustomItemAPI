@@ -6,7 +6,7 @@
 
     <groupId>cn.lanink</groupId>
     <artifactId>CustomItemAPI</artifactId>
-    <version>1.0.1-PM1E</version>
+    <version>1.0.2-PM1E-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -132,7 +132,8 @@
             <groupId>cn.nukkit</groupId>
             <artifactId>Nukkit</artifactId>
             <version>PM1E</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Nukkit-PM1E_1.18.30.2146.jar</systemPath>
         </dependency>
 
         <dependency>
