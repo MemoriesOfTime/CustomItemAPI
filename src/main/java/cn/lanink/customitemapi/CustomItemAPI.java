@@ -19,8 +19,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author LT_Name
@@ -32,6 +31,15 @@ public class CustomItemAPI extends PluginBase implements Listener {
 
     private final HashMap<Integer, Class<? extends Item>> customItems = new HashMap<>();
 
+    private final List<Integer> supportedProtocol = Arrays.asList(
+            ProtocolInfo.v1_16_100,
+            ProtocolInfo.v1_17_0,
+            ProtocolInfo.v1_17_10,
+            ProtocolInfo.v1_18_0,
+            ProtocolInfo.v1_18_10_26,
+            ProtocolInfo.v1_18_30
+    );
+
     public static CustomItemAPI getInstance() {
         return customItemAPI;
     }
@@ -42,6 +50,12 @@ public class CustomItemAPI extends PluginBase implements Listener {
             throw new RuntimeException("重复执行onLoad方法");
         }
         customItemAPI = this;
+
+        //TODO 当Nukkit-PM1E完成修改，启用以下代码
+        //需要Nukkit-PM1E对ProtocolInfo.CURRENT_PROTOCOL进行特殊处理才能生效
+        /*if (ProtocolInfo.CURRENT_PROTOCOL > ProtocolInfo.v1_16_100 && !supportedProtocol.contains(ProtocolInfo.CURRENT_PROTOCOL)) {
+            supportedProtocol.add(ProtocolInfo.CURRENT_PROTOCOL);
+        }*/
     }
 
     @Override
@@ -52,7 +66,9 @@ public class CustomItemAPI extends PluginBase implements Listener {
     }
 
     public void registerCustomItem(int id, @NotNull Class<? extends ItemCustom> c) {
-        this.registerCustomItem(id, c, ProtocolInfo.v1_17_10);
+        for (int protocol : supportedProtocol) {
+            this.registerCustomItem(id, c, protocol);
+        }
     }
 
     public void registerCustomItem(int id, @NotNull Class<? extends ItemCustom> c, int protocol) {
