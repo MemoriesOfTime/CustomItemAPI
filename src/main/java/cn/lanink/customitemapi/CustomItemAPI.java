@@ -118,10 +118,15 @@ public class CustomItemAPI extends PluginBase implements Listener {
             paletteBuffer.putUnsignedVarInt(legacy2Runtime.size());
 
             for (RuntimeItemMapping.RuntimeEntry entry : legacy2Runtime.values()) {
-                paletteBuffer.putString(entry.getIdentifier());
-                paletteBuffer.putLShort(entry.getRuntimeId());
-                // Component item
-                paletteBuffer.putBoolean(this.customItems.containsKey(entry.getRuntimeId()));
+                if (this.customItems.containsKey(entry.getRuntimeId())) {
+                    paletteBuffer.putString(("customitem:" + entry.getIdentifier()).toLowerCase());
+                    paletteBuffer.putLShort(entry.getRuntimeId());
+                    paletteBuffer.putBoolean(true);
+                }else {
+                    paletteBuffer.putString(entry.getIdentifier());
+                    paletteBuffer.putLShort(entry.getRuntimeId());
+                    paletteBuffer.putBoolean(false);
+                }
             }
 
             Field itemPaletteField = runtimeItemMappingClass.getDeclaredField("itemPalette");
@@ -150,7 +155,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
             CompoundTag data = itemCustom.getComponentsData(player.protocol);
             data.putShort("minecraft:identifier", i);
 
-            itemComponentPacket.entries[i] = new ItemComponentPacket.Entry(item.getName(), data);
+            itemComponentPacket.entries[i] = new ItemComponentPacket.Entry(("customitem:" + item.getName()).toLowerCase(), data);
 
             i++;
         }
