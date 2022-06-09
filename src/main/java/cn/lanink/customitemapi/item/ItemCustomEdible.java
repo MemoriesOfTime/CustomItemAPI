@@ -2,16 +2,26 @@ package cn.lanink.customitemapi.item;
 
 import cn.nukkit.Player;
 import cn.nukkit.event.player.PlayerItemConsumeEvent;
+import cn.nukkit.item.ItemEdible;
 import cn.nukkit.item.food.Food;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.ProtocolInfo;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author lt_name
  */
-public abstract class ItemCustomEdible extends ItemCustom {
+public abstract class ItemCustomEdible extends ItemEdible implements IItemCustom {
+
+    @Setter
+    @Getter
+    private String textureName;
+
+    @Setter
+    @Getter
+    private int textureSize = 16;
 
     public ItemCustomEdible(int id) {
         this(id, 0, 1, UNKNOWN_STR);
@@ -30,12 +40,18 @@ public abstract class ItemCustomEdible extends ItemCustom {
     }
 
     public ItemCustomEdible(int id, Integer meta, int count, String name, String textureName) {
-        super(id, meta, count, name, textureName);
+        super(id, meta, count, name);
+        this.textureName = textureName;
+    }
+
+    @Override
+    public CompoundTag getComponentsData() {
+        return IItemCustom.getComponentsData(this);
     }
 
     @Override
     public CompoundTag getComponentsData(int protocol) {
-        CompoundTag data = super.getComponentsData(protocol);
+        CompoundTag data = IItemCustom.getComponentsData(this, protocol);
 
         data.getCompound("components").putCompound("minecraft:food",
                 new CompoundTag()

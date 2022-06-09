@@ -1,6 +1,6 @@
 package cn.lanink.customitemapi;
 
-import cn.lanink.customitemapi.item.ItemCustom;
+import cn.lanink.customitemapi.item.IItemCustom;
 import cn.lanink.customitemapi.network.protocol.ItemComponentPacket;
 import cn.nukkit.Player;
 import cn.nukkit.event.EventHandler;
@@ -29,7 +29,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
     public static final String VERSION = "?";
     private static CustomItemAPI customItemAPI;
 
-    private final HashMap<Integer, Class<? extends Item>> customItems = new HashMap<>();
+    private final HashMap<Integer, Class<? extends IItemCustom>> customItems = new HashMap<>();
 
     private final List<Integer> supportedProtocol = Arrays.asList(
             ProtocolInfo.v1_16_100,
@@ -66,13 +66,13 @@ public class CustomItemAPI extends PluginBase implements Listener {
         this.getLogger().info("§eCustomItemAPI §aEnabled！ §bVersion：" + VERSION);
     }
 
-    public void registerCustomItem(int id, @NotNull Class<? extends ItemCustom> c) {
+    public void registerCustomItem(int id, @NotNull Class<? extends IItemCustom> c) {
         for (int protocol : supportedProtocol) {
             this.registerCustomItem(id, c, protocol);
         }
     }
 
-    public void registerCustomItem(int id, @NotNull Class<? extends ItemCustom> c, int protocol) {
+    public void registerCustomItem(int id, @NotNull Class<? extends IItemCustom> c, int protocol) {
         this.customItems.put(id, c);
         Item.list[id] = c;
 
@@ -92,7 +92,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
             Map<String, RuntimeItemMapping.LegacyEntry> identifier2Legacy = (Map<String, RuntimeItemMapping.LegacyEntry>) identifier2LegacyField.get(RuntimeItems.getMapping(protocol));
 
 
-            ItemCustom item = (ItemCustom) Item.get(id);
+            IItemCustom item = (IItemCustom) Item.get(id);
             int fullId = RuntimeItems.getMapping(protocol).getFullId(item.getId(), 0);
 
             RuntimeItemMapping.LegacyEntry legacyEntry = new RuntimeItemMapping.LegacyEntry(item.getId(), false, 0);
@@ -148,11 +148,11 @@ public class CustomItemAPI extends PluginBase implements Listener {
         int i = 0;
         for (Integer id : this.customItems.keySet()) {
             Item item = Item.get(id);
-            if (!(item instanceof ItemCustom)) {
+            if (!(item instanceof IItemCustom)) {
                 continue;
             }
 
-            ItemCustom itemCustom = (ItemCustom) item;
+            IItemCustom itemCustom = (IItemCustom) item;
             CompoundTag data = itemCustom.getComponentsData(player.protocol);
             data.putShort("minecraft:identifier", i);
 
