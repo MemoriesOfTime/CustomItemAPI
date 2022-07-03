@@ -9,7 +9,7 @@ public interface IItemCustom extends IItem {
 
     String getTextureName();
 
-    void setTextureName();
+    void setTextureName(String textureName);
 
     int getTextureSize();
 
