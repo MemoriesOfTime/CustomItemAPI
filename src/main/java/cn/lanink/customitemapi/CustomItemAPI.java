@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class CustomItemAPI extends PluginBase implements Listener {
 
-    public static final String VERSION = "1.0.4-PM1E git-6c2126b";
+    public static final String VERSION = "1.0.5-PM1E git-8fdd214";
     private static CustomItemAPI customItemAPI;
 
     private final HashMap<Integer, Class<? extends IItemCustom>> customItems = new HashMap<>();
@@ -92,7 +92,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
             Map<String, RuntimeItemMapping.LegacyEntry> identifier2Legacy = (Map<String, RuntimeItemMapping.LegacyEntry>) identifier2LegacyField.get(RuntimeItems.getMapping(protocol));
 
 
-            IItemCustom item = (IItemCustom) Item.get(id);
+            IItemCustom item = c.getDeclaredConstructor().newInstance();
             int fullId = RuntimeItems.getMapping(protocol).getFullId(item.getId(), 0);
 
             RuntimeItemMapping.LegacyEntry legacyEntry = new RuntimeItemMapping.LegacyEntry(item.getId(), false, 0);
@@ -147,18 +147,17 @@ public class CustomItemAPI extends PluginBase implements Listener {
 
         int i = 0;
         for (Integer id : this.customItems.keySet()) {
-            Item item = Item.get(id);
-            if (!(item instanceof IItemCustom)) {
-                continue;
+            try {
+                IItemCustom itemCustom = this.customItems.get(id).getDeclaredConstructor().newInstance();
+                CompoundTag data = itemCustom.getComponentsData(player.protocol);
+                data.putShort("minecraft:identifier", i);
+
+                itemComponentPacket.entries[i] = new ItemComponentPacket.Entry(("customitem:" + itemCustom.getName()).toLowerCase(), data);
+
+                i++;
+            }catch (Exception e) {
+                this.getLogger().error("register custom item error!", e);
             }
-
-            IItemCustom itemCustom = (IItemCustom) item;
-            CompoundTag data = itemCustom.getComponentsData(player.protocol);
-            data.putShort("minecraft:identifier", i);
-
-            itemComponentPacket.entries[i] = new ItemComponentPacket.Entry(("customitem:" + item.getName()).toLowerCase(), data);
-
-            i++;
         }
 
         player.dataPacket(itemComponentPacket);

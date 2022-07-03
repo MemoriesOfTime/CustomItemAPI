@@ -1,6 +1,6 @@
 name: CustomItemAPI
 main: cn.lanink.customitemapi.CustomItemAPI
-version: "1.0.4-PM1E"
+version: "1.0.5-PM1E"
 api: ["Nukkit-PM1E"]
 load: STARTUP
 author: "LT_Name"
