@@ -13,7 +13,7 @@ public interface IItemCustom extends IItem {
 
     int getTextureSize();
 
-    void setTextureSize();
+    void setTextureSize(int textureSize);
 
     default boolean allowOffHand() {
         return false;
