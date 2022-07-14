@@ -51,12 +51,6 @@ public class CustomItemAPI extends PluginBase implements Listener {
             throw new RuntimeException("重复执行onLoad方法");
         }
         customItemAPI = this;
-
-        //自动支持最新协议（可能会导致重复注册但理论无影响）
-        //只能做到支持最新，所以中间的仍需要手动添加
-        if (ProtocolInfo.CURRENT_PROTOCOL > ProtocolInfo.v1_16_100 && !supportedProtocol.contains(ProtocolInfo.CURRENT_PROTOCOL)) {
-            supportedProtocol.add(ProtocolInfo.CURRENT_PROTOCOL);
-        }
     }
 
     @Override
