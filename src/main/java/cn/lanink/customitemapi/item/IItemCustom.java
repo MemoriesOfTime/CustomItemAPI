@@ -23,6 +23,10 @@ public interface IItemCustom extends IItem {
         return 4;
     }
 
+    default String getCreativeGroup() {
+        return "";
+    }
+
     CompoundTag getComponentsData();
 
     CompoundTag getComponentsData(int protocol);
@@ -44,6 +48,11 @@ public interface IItemCustom extends IItem {
                         .putInt("max_stack_size", item.getMaxStackSize())
                 )
         );
+
+        if (!item.getCreativeGroup().isEmpty()) {
+            data.getCompound("components").getCompound("item_properties")
+                    .putString("creative_group", item.getCreativeGroup());
+        }
 
         if (protocol >= ProtocolInfo.v1_17_30) {
             data.getCompound("components").getCompound("item_properties")

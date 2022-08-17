@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class CustomItemAPI extends PluginBase implements Listener {
 
-    public static final String VERSION = "1.0.5-PM1E git-8fdd214";
+    public static final String VERSION = "?";
     private static CustomItemAPI customItemAPI;
 
     private final HashMap<Integer, Class<? extends IItemCustom>> customItems = new HashMap<>();

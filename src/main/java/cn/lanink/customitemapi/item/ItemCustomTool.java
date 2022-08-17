@@ -61,13 +61,13 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
 
         if(this.isPickaxe()) {
             data.getCompound("components")
-                    .putCompound("minecraft:digger", getPickaxeDiggerNBT(this.getTier()));
+                    .putCompound("minecraft:digger", getPickaxeDiggerNBT(this));
         }else if(this.isAxe()) {
             data.getCompound("components")
-                    .putCompound("minecraft:digger", getAxeDiggerNBT(this.getTier()));
+                    .putCompound("minecraft:digger", getAxeDiggerNBT(this));
         }else if(this.isShovel()) {
             data.getCompound("components")
-                    .putCompound("minecraft:digger", getShovelDiggerNBT(this.getTier()));
+                    .putCompound("minecraft:digger", getShovelDiggerNBT(this));
         }
 
         return data;
@@ -88,20 +88,40 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
         return DURABILITY_WOODEN;
     }
 
-    public static CompoundTag getPickaxeDiggerNBT(int tier){
+    /**
+     * 控制工具的挖掘速度(默认0 使用工具等级计算挖掘速度)
+     *
+     * @return 挖掘速度
+     */
+    public int getDestroySpeeds() {
+        return 0;
+    }
+
+    public static CompoundTag getPickaxeDiggerNBT(ItemCustomTool item) {
         int speed = 1;
-        if(tier == 0){
-            return new CompoundTag().putBoolean("use_efficiency",true);
-        }else if(tier == 5){
-            speed = 6;
-        }else if(tier == 4){
-            speed = 5;
-        }else if(tier == 3){
-            speed = 4;
-        }else if(tier == 2){
-            speed = 3;
-        }else if(tier == 1){
-            speed = 2;
+        if (item.getDestroySpeeds() > 0) {
+            speed = item.getDestroySpeeds();
+        }else {
+            int tier = item.getTier();
+            switch (tier) {
+                case 5:
+                    speed = 6;
+                    break;
+                case 4:
+                    speed = 5;
+                    break;
+                case 3:
+                    speed = 4;
+                    break;
+                case 2:
+                    speed = 3;
+                    break;
+                case 1:
+                    speed = 2;
+                    break;
+                case 0:
+                    return new CompoundTag().putBoolean("use_efficiency", true);
+            }
         }
         CompoundTag diggerRoot = new CompoundTag().putBoolean("use_efficiency",true);
         ListTag<Tag> destroy_speeds = new ListTag<>("destroy_speeds");
@@ -110,24 +130,35 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
                         new CompoundTag()
                                 .putString("tags",
                                         "q.any_tag('stone', 'metal', 'diamond_pick_diggable', 'mob_spawner', 'rail')"))
-                .putInt("speed",speed));
+                .putInt("speed", speed));
         return diggerRoot.putList(destroy_speeds);
     }
 
-    public static CompoundTag getAxeDiggerNBT(int tier){
+    public static CompoundTag getAxeDiggerNBT(ItemCustomTool item) {
         int speed = 1;
-        if(tier == 0){
-            return new CompoundTag().putBoolean("use_efficiency",true);
-        }else if(tier == 5){
-            speed = 6;
-        }else if(tier == 4){
-            speed = 5;
-        }else if(tier == 3){
-            speed = 4;
-        }else if(tier == 2){
-            speed = 3;
-        }else if(tier == 1){
-            speed = 2;
+        if (item.getDestroySpeeds() > 0) {
+            speed = item.getDestroySpeeds();
+        }else {
+            int tier = item.getTier();
+            switch (tier) {
+                case 5:
+                    speed = 6;
+                    break;
+                case 4:
+                    speed = 5;
+                    break;
+                case 3:
+                    speed = 4;
+                    break;
+                case 2:
+                    speed = 3;
+                    break;
+                case 1:
+                    speed = 2;
+                    break;
+                case 0:
+                    return new CompoundTag().putBoolean("use_efficiency", true);
+            }
         }
         CompoundTag diggerRoot = new CompoundTag().putBoolean("use_efficiency",true);
         ListTag<Tag> destroy_speeds = new ListTag<>("destroy_speeds");
@@ -139,20 +170,31 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
         return diggerRoot.putList(destroy_speeds);
     }
 
-    public static CompoundTag getShovelDiggerNBT(int tier){
+    public static CompoundTag getShovelDiggerNBT(ItemCustomTool item){
         int speed = 1;
-        if(tier == 0){
-            return new CompoundTag().putBoolean("use_efficiency",true);
-        }else if(tier == 5){
-            speed = 6;
-        }else if(tier == 4){
-            speed = 5;
-        }else if(tier == 3){
-            speed = 4;
-        }else if(tier == 2){
-            speed = 3;
-        }else if(tier == 1){
-            speed = 2;
+        if (item.getDestroySpeeds() > 0) {
+            speed = item.getDestroySpeeds();
+        }else {
+            int tier = item.getTier();
+            switch (tier) {
+                case 5:
+                    speed = 6;
+                    break;
+                case 4:
+                    speed = 5;
+                    break;
+                case 3:
+                    speed = 4;
+                    break;
+                case 2:
+                    speed = 3;
+                    break;
+                case 1:
+                    speed = 2;
+                    break;
+                case 0:
+                    return new CompoundTag().putBoolean("use_efficiency", true);
+            }
         }
         CompoundTag diggerRoot = new CompoundTag().putBoolean("use_efficiency",true);
         ListTag<Tag> destroy_speeds = new ListTag<>("destroy_speeds");
