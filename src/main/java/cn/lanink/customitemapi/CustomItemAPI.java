@@ -38,7 +38,9 @@ public class CustomItemAPI extends PluginBase implements Listener {
             ProtocolInfo.v1_18_0,
             ProtocolInfo.v1_18_10_26,
             ProtocolInfo.v1_18_30,
-            ProtocolInfo.v1_19_0
+            ProtocolInfo.v1_19_0,
+            ProtocolInfo.v1_19_10,
+            ProtocolInfo.v1_19_50
     );
 
     public static CustomItemAPI getInstance() {
@@ -67,6 +69,11 @@ public class CustomItemAPI extends PluginBase implements Listener {
     }
 
     public void registerCustomItem(int id, @NotNull Class<? extends IItemCustom> c, int protocol) {
+        //针对使用旧版Nukkit-PM1E的情况
+        if (protocol > ProtocolInfo.CURRENT_PROTOCOL) {
+            return;
+        }
+
         this.customItems.put(id, c);
         Item.list[id] = c;
 
