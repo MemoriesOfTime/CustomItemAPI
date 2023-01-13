@@ -6,7 +6,7 @@
 
     <groupId>cn.lanink</groupId>
     <artifactId>CustomItemAPI</artifactId>
-    <version>1.0.6-PM1E-SNAPSHOT</version>
+    <version>1.0.6-PM1E<!-- -SNAPSHOT--></version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
