@@ -1,7 +1,10 @@
 package cn.lanink.customitemapi.item;
 
 import cn.nukkit.item.Item;
+import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.FloatTag;
+import cn.nukkit.nbt.tag.ListTag;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,10 +75,6 @@ public abstract class ItemCustom extends Item implements IItemCustom {
     @Override
     public CompoundTag getComponentsData(int protocol) {
         return IItemCustom.getComponentsData(this, protocol);
-    }
-
-    private static CompoundTag xyzToCompoundTag(float x, float y, float z) {
-        return new CompoundTag().putCompound("scale", new CompoundTag().putFloat("x", x).putFloat("y", y).putFloat("z", z));
     }
 
 }
