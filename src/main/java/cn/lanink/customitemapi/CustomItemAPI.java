@@ -15,6 +15,7 @@ import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.network.protocol.ResourcePackStackPacket;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.BinaryStream;
+import cn.nukkit.utils.Config;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +27,6 @@ import java.util.*;
  */
 public class CustomItemAPI extends PluginBase implements Listener {
 
-    public static final String VERSION = "1.0.7-PM1E-SNAPSHOT git-dcb8d33";
     private static CustomItemAPI customItemAPI;
 
     private final HashMap<Integer, Class<? extends IItemCustom>> customItems = new HashMap<>();
@@ -59,7 +59,13 @@ public class CustomItemAPI extends PluginBase implements Listener {
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
 
-        this.getLogger().info("§eCustomItemAPI §aEnabled！ §bVersion：" + VERSION);
+        this.getLogger().info("§eCustomItemAPI §aEnabled！ §bVersion：" + this.getVersion());
+    }
+
+    public String getVersion() {
+        Config config = new Config(Config.PROPERTIES);
+        config.load(this.getResource("git.properties"));
+        return config.get("git.build.version", this.getDescription().getVersion()) + " git-" + config.get("git.commit.id.abbrev", "Unknown");
     }
 
     public void registerCustomItem(int id, @NotNull Class<? extends IItemCustom> c) {

@@ -1,7 +1,6 @@
 package cn.lanink.customitemapi.item;
 
 import cn.nukkit.Server;
-import cn.nukkit.item.Item;
 import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.FloatTag;
@@ -9,6 +8,10 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.ProtocolInfo;
 
 public interface IItemCustom extends IItem {
+
+    default CustomItemDefinition getDefinition() {
+        return null;
+    }
 
     String getTextureName();
 
@@ -19,15 +22,24 @@ public interface IItemCustom extends IItem {
     void setTextureSize(int textureSize);
 
     default boolean allowOffHand() {
+        if (this.getDefinition() != null) {
+            return this.getDefinition().allowOffHand();
+        }
         return false;
     }
 
     default int getCreativeCategory() {
+        if (this.getDefinition() != null) {
+            return this.getDefinition().getCreativeCategory();
+        }
         return 4;
     }
 
     default String getCreativeGroup() {
-        return "";
+        if (this.getDefinition() != null) {
+            return this.getDefinition().getCreativeGroup();
+        }
+        return "none";
     }
 
     CompoundTag getComponentsData();
@@ -40,6 +52,11 @@ public interface IItemCustom extends IItem {
     }
 
     static CompoundTag getComponentsData(IItemCustom item, int protocol) {
+        //TODO CustomItemDefinition 多版本支持
+        if (item.getDefinition() != null) {
+            return item.getDefinition().getNbt();
+        }
+
         CompoundTag data = new CompoundTag();
         data.putCompound("components", new CompoundTag()
                 .putCompound("minecraft:display_name", new CompoundTag()

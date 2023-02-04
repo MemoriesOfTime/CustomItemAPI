@@ -40,6 +40,9 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
 
     @Override
     public int getCreativeCategory() {
+        if (this.getDefinition() != null) {
+            return this.getDefinition().getCreativeCategory();
+        }
         return 3;
     }
 
