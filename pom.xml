@@ -125,7 +125,7 @@
         <dependency>
             <groupId>cn.nukkit</groupId>
             <artifactId>Nukkit</artifactId>
-            <version>PM1E_1.19.60.2585</version>
+            <version>PM1E_1.19.70.2715</version>
             <scope>provided</scope>
         </dependency>
 
