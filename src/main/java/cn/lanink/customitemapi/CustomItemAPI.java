@@ -44,7 +44,8 @@ public class CustomItemAPI extends PluginBase implements Listener {
             ProtocolInfo.v1_19_60,
             ProtocolInfo.v1_19_70_24,
             ProtocolInfo.v1_19_80,
-            ProtocolInfo.v1_20_0
+            ProtocolInfo.v1_20_0,
+            ProtocolInfo.v1_20_10
     );
 
     public static CustomItemAPI getInstance() {
