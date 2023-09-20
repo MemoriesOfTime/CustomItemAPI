@@ -13,6 +13,7 @@ import cn.nukkit.item.RuntimeItems;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.ProtocolInfo;
 import cn.nukkit.network.protocol.ResourcePackStackPacket;
+import cn.nukkit.network.protocol.types.ExperimentData;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.BinaryStream;
 import cn.nukkit.utils.Config;
@@ -45,7 +46,8 @@ public class CustomItemAPI extends PluginBase implements Listener {
             ProtocolInfo.v1_19_70_24,
             ProtocolInfo.v1_19_80,
             ProtocolInfo.v1_20_0,
-            ProtocolInfo.v1_20_10
+            ProtocolInfo.v1_20_10,
+            ProtocolInfo.v1_20_30
     );
 
     public static CustomItemAPI getInstance() {
@@ -180,10 +182,10 @@ public class CustomItemAPI extends PluginBase implements Listener {
         if (event.getPacket() instanceof ResourcePackStackPacket) {
             ResourcePackStackPacket pk = (ResourcePackStackPacket) event.getPacket();
             pk.experiments.add(
-                    new ResourcePackStackPacket.ExperimentData("data_driven_items", true)
+                    new ExperimentData("data_driven_items", true)
             );
             pk.experiments.add(
-                    new ResourcePackStackPacket.ExperimentData("experimental_custom_ui", true)
+                    new ExperimentData("experimental_custom_ui", true)
             );
             pk.encode();
         }
