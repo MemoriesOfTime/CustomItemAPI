@@ -7,12 +7,8 @@ import lombok.Setter;
 
 public abstract class ItemCustomArmor extends ItemArmor implements IItemCustom {
 
-    @Setter
-    @Getter
     private String textureName;
 
-    @Setter
-    @Getter
     private int textureSize = 16;
 
     public ItemCustomArmor(int id) {
@@ -82,6 +78,26 @@ public abstract class ItemCustomArmor extends ItemArmor implements IItemCustom {
         }
 
         return data;
+    }
+
+    @Override
+    public String getTextureName() {
+        return this.textureName;
+    }
+
+    @Override
+    public void setTextureName(String textureName) {
+        this.textureName = textureName;
+    }
+
+    @Override
+    public int getTextureSize() {
+        return this.textureSize;
+    }
+
+    @Override
+    public void setTextureSize(int textureSize) {
+        this.textureSize = textureSize;
     }
 
     @Override

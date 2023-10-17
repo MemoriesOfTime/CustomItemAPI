@@ -28,6 +28,8 @@ import java.util.*;
  */
 public class CustomItemAPI extends PluginBase implements Listener {
 
+    public static final String VERSION = "?";
+
     private static CustomItemAPI customItemAPI;
 
     private final HashMap<Integer, Class<? extends IItemCustom>> customItems = new HashMap<>();
@@ -70,9 +72,7 @@ public class CustomItemAPI extends PluginBase implements Listener {
     }
 
     public String getVersion() {
-        Config config = new Config(Config.PROPERTIES);
-        config.load(this.getResource("git.properties"));
-        return config.get("git.build.version", this.getDescription().getVersion()) + " git-" + config.get("git.commit.id.abbrev", "Unknown");
+        return VERSION;
     }
 
     public void registerCustomItem(int id, @NotNull Class<? extends IItemCustom> c) {

@@ -2,17 +2,11 @@ package cn.lanink.customitemapi.item;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.nbt.tag.CompoundTag;
-import lombok.Getter;
-import lombok.Setter;
 
 public abstract class ItemCustom extends Item implements IItemCustom {
 
-    @Setter
-    @Getter
     private String textureName;
 
-    @Setter
-    @Getter
     private int textureSize = 16;
 
     public ItemCustom(int id) {
@@ -44,6 +38,26 @@ public abstract class ItemCustom extends Item implements IItemCustom {
     @Override
     public CompoundTag getComponentsData(int protocol) {
         return IItemCustom.getComponentsData(this, protocol);
+    }
+
+    @Override
+    public String getTextureName() {
+        return this.textureName;
+    }
+
+    @Override
+    public void setTextureName(String textureName) {
+        this.textureName = textureName;
+    }
+
+    @Override
+    public int getTextureSize() {
+        return this.textureSize;
+    }
+
+    @Override
+    public void setTextureSize(int textureSize) {
+        this.textureSize = textureSize;
     }
 
 }

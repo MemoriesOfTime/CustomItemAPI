@@ -4,8 +4,7 @@ import cn.nukkit.math.Vector3f;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * RenderOffsets是设置 render_offsets 项目组件。可以设置参数来偏移物品的在不同视角下的呈现方式。

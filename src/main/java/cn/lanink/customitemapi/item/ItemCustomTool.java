@@ -4,17 +4,11 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
-import lombok.Getter;
-import lombok.Setter;
 
 public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
 
-    @Setter
-    @Getter
     private String textureName;
 
-    @Setter
-    @Getter
     private int textureSize = 16;
 
     public ItemCustomTool(int id) {
@@ -36,14 +30,6 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
     public ItemCustomTool(int id, Integer meta, int count, String name, String textureName) {
         super(id, meta, count, name);
         this.textureName = textureName;
-    }
-
-    @Override
-    public int getCreativeCategory() {
-        if (this.getDefinition() != null) {
-            return this.getDefinition().getCreativeCategory();
-        }
-        return 3;
     }
 
     @Override
@@ -74,6 +60,34 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
         }
 
         return data;
+    }
+
+    @Override
+    public String getTextureName() {
+        return this.textureName;
+    }
+
+    @Override
+    public void setTextureName(String textureName) {
+        this.textureName = textureName;
+    }
+
+    @Override
+    public int getTextureSize() {
+        return this.textureSize;
+    }
+
+    @Override
+    public void setTextureSize(int textureSize) {
+        this.textureSize = textureSize;
+    }
+
+    @Override
+    public int getCreativeCategory() {
+        if (this.getDefinition() != null) {
+            return this.getDefinition().getCreativeCategory();
+        }
+        return 3;
     }
 
     @Override
