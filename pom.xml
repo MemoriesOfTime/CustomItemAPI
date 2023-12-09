@@ -122,7 +122,7 @@
         </repository>
         <repository>
             <id>repo-lanink-cn</id>
-            <url>https://repo.lanink.cn/</url>
+            <url>https://repo.lanink.cn/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -131,7 +131,7 @@
         <dependency>
             <groupId>cn.nukkit</groupId>
             <artifactId>Nukkit</artifactId>
-            <version>PM1E_1.20.30.3330</version>
+            <version>PM1E_1.20.50.3397</version>
             <scope>provided</scope>
         </dependency>
 

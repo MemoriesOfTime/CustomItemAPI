@@ -16,7 +16,6 @@ import cn.nukkit.network.protocol.ResourcePackStackPacket;
 import cn.nukkit.network.protocol.types.ExperimentData;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.BinaryStream;
-import cn.nukkit.utils.Config;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +48,8 @@ public class CustomItemAPI extends PluginBase implements Listener {
             ProtocolInfo.v1_19_80,
             ProtocolInfo.v1_20_0,
             ProtocolInfo.v1_20_10,
-            ProtocolInfo.v1_20_30
+            ProtocolInfo.v1_20_30,
+            ProtocolInfo.v1_20_50
     );
 
     public static CustomItemAPI getInstance() {
