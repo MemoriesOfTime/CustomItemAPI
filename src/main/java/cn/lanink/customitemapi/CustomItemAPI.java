@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class CustomItemAPI extends PluginBase implements Listener {
 
-    public static final String VERSION = "1.0.7-PM1E-SNAPSHOT git-57b3457";
+    public static final String VERSION = "?";
 
     private static CustomItemAPI customItemAPI;
 

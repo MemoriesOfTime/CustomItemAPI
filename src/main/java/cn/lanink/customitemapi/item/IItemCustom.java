@@ -52,9 +52,8 @@ public interface IItemCustom extends IItem {
     }
 
     static CompoundTag getComponentsData(IItemCustom item, int protocol) {
-        //TODO CustomItemDefinition 多版本支持
         if (item.getDefinition() != null) {
-            return item.getDefinition().getNbt();
+            return item.getDefinition().getNbt(protocol);
         }
 
         CompoundTag data = new CompoundTag();
@@ -74,7 +73,11 @@ public interface IItemCustom extends IItem {
                     .putString("creative_group", item.getCreativeGroup());
         }
 
-        if (protocol >= ProtocolInfo.v1_17_30) {
+        if (protocol >= ProtocolInfo.v1_20_60) {
+            data.getCompound("components").getCompound("item_properties")
+                    .putCompound("minecraft:icon", new CompoundTag()
+                            .putCompound("textures", new CompoundTag().putString("default", item.getTextureName() != null ? item.getTextureName() : item.getName())));
+        } else if (protocol >= ProtocolInfo.v1_17_30) {
             data.getCompound("components").getCompound("item_properties")
                     .putCompound("minecraft:icon", new CompoundTag()
                             .putString("texture", item.getTextureName() != null ? item.getTextureName() : item.getName()));
