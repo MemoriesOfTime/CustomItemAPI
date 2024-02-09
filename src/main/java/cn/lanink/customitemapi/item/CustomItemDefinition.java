@@ -136,7 +136,8 @@ public class CustomItemDefinition {
             this.nbt.getCompound("components")
                     .getCompound("item_properties")
                     .getCompound("minecraft:icon")
-                    .putString("texture", item.getTextureName());
+                    .putString("texture", item.getTextureName()) //1.17.30 - 1.20.50
+                    .putCompound("textures", new CompoundTag().putString("default", item.getTextureName())); //1.20.60+=
             //定义显示名
             if (item.getName() != null) {
                 this.nbt.getCompound("components")

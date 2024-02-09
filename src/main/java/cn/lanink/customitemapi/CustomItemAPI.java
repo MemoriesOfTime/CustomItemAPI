@@ -3,6 +3,7 @@ package cn.lanink.customitemapi;
 import cn.lanink.customitemapi.item.IItemCustom;
 import cn.lanink.customitemapi.network.protocol.ItemComponentPacket;
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerJoinEvent;
@@ -27,9 +28,11 @@ import java.util.*;
  */
 public class CustomItemAPI extends PluginBase implements Listener {
 
-    public static final String VERSION = "?";
+    public static final String VERSION = "1.0.7-PM1E-SNAPSHOT git-57b3457";
 
     private static CustomItemAPI customItemAPI;
+
+    private boolean isNKMOT = false;
 
     private final HashMap<Integer, Class<? extends IItemCustom>> customItems = new HashMap<>();
 
@@ -49,7 +52,8 @@ public class CustomItemAPI extends PluginBase implements Listener {
             ProtocolInfo.v1_20_0,
             ProtocolInfo.v1_20_10,
             ProtocolInfo.v1_20_30,
-            ProtocolInfo.v1_20_50
+            ProtocolInfo.v1_20_50,
+            ProtocolInfo.v1_20_60
     );
 
     public static CustomItemAPI getInstance() {
@@ -62,6 +66,10 @@ public class CustomItemAPI extends PluginBase implements Listener {
             throw new RuntimeException("重复执行onLoad方法");
         }
         customItemAPI = this;
+
+        if (Server.getInstance().getCodename().equalsIgnoreCase("MOT")) {
+            this.isNKMOT = true;
+        }
     }
 
     @Override
@@ -156,6 +164,10 @@ public class CustomItemAPI extends PluginBase implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        if (this.isNKMOT) {
+            return;
+        }
+
         ItemComponentPacket itemComponentPacket = new ItemComponentPacket();
         itemComponentPacket.entries = new ItemComponentPacket.Entry[this.customItems.size()];
 
@@ -187,6 +199,30 @@ public class CustomItemAPI extends PluginBase implements Listener {
             pk.experiments.add(
                     new ExperimentData("experimental_custom_ui", true)
             );
+            pk.encode();
+        } else if (this.isNKMOT && event.getPacket() instanceof ItemComponentPacket) {
+            ItemComponentPacket pk = (ItemComponentPacket) event.getPacket();
+
+            ItemComponentPacket.Entry[] newEntries = new ItemComponentPacket.Entry[pk.entries.length + this.customItems.size()];
+            System.arraycopy(pk.entries, 0, newEntries, 0, pk.entries.length);
+
+            int i = pk.entries.length - 1;
+            for (Integer id : this.customItems.keySet()) {
+                try {
+                    IItemCustom itemCustom = this.customItems.get(id).getDeclaredConstructor().newInstance();
+                    CompoundTag data = itemCustom.getComponentsData(event.getPlayer().protocol);
+                    data.putShort("minecraft:identifier", i);
+
+                    newEntries[i] = new ItemComponentPacket.Entry(("customitem:" + itemCustom.getName()).toLowerCase(), data);
+
+                    i++;
+                }catch (Exception e) {
+                    this.getLogger().error("register custom item error!", e);
+                }
+            }
+
+            pk.entries = newEntries;
+
             pk.encode();
         }
 
