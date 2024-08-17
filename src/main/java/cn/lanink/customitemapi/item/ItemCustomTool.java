@@ -4,6 +4,7 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
+import cn.nukkit.network.protocol.ProtocolInfo;
 
 public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
 
@@ -34,7 +35,7 @@ public abstract class ItemCustomTool extends ItemTool implements IItemCustom {
 
     @Override
     public CompoundTag getComponentsData() {
-        return IItemCustom.getComponentsData(this);
+        return this.getComponentsData(ProtocolInfo.CURRENT_PROTOCOL);
     }
 
     @Override

@@ -42,14 +42,17 @@ public interface IItemCustom extends IItem {
         return "none";
     }
 
+    /**
+     * Возвращает описание предмета для отображения в имени.
+     * @return описание предмета
+     */
+    default String[] getItemDescription() {
+        return new String[0]; // Возвращаем пустой массив по умолчанию, если описание не задано
+    }
+
     CompoundTag getComponentsData();
 
     CompoundTag getComponentsData(int protocol);
-
-    static CompoundTag getComponentsData(IItemCustom item) {
-        Server.mvw("ItemCustom#getComponentsData()");
-        return getComponentsData(item, ProtocolInfo.CURRENT_PROTOCOL);
-    }
 
     static CompoundTag getComponentsData(IItemCustom item, int protocol) {
         if (item.getDefinition() != null) {
@@ -57,34 +60,40 @@ public interface IItemCustom extends IItem {
         }
 
         CompoundTag data = new CompoundTag();
-        data.putCompound("components", new CompoundTag()
-                .putCompound("minecraft:display_name", new CompoundTag()
-                        .putString("value", item.getName())
-                ).putCompound("item_properties", new CompoundTag()
-                        .putBoolean("allow_off_hand", item.allowOffHand())
-                        .putBoolean("hand_equipped", item.isTool())
-                        .putInt("creative_category", item.getCreativeCategory())
-                        .putInt("max_stack_size", item.getMaxStackSize())
-                )
+        CompoundTag components = new CompoundTag();
+
+        // Добавляем отображаемое имя с описанием
+        StringBuilder displayName = new StringBuilder(item.getName());
+        String[] description = item.getItemDescription();
+        for (String line : description) {
+            displayName.append("\n").append(line);
+        }
+        components.putCompound("minecraft:display_name", new CompoundTag().putString("value", displayName.toString()));
+
+        // Добавляем остальные компоненты
+        components.putCompound("item_properties", new CompoundTag()
+                .putBoolean("allow_off_hand", item.allowOffHand())
+                .putBoolean("hand_equipped", item.isTool())
+                .putInt("creative_category", item.getCreativeCategory())
+                .putInt("max_stack_size", item.getMaxStackSize())
         );
 
         if (!item.getCreativeGroup().isEmpty()) {
-            data.getCompound("components").getCompound("item_properties")
+            components.getCompound("item_properties")
                     .putString("creative_group", item.getCreativeGroup());
         }
 
         if (protocol >= ProtocolInfo.v1_20_60) {
-            data.getCompound("components").getCompound("item_properties")
+            components.getCompound("item_properties")
                     .putCompound("minecraft:icon", new CompoundTag()
                             .putCompound("textures", new CompoundTag().putString("default", item.getTextureName() != null ? item.getTextureName() : item.getName())));
         } else if (protocol >= ProtocolInfo.v1_17_30) {
-            data.getCompound("components").getCompound("item_properties")
+            components.getCompound("item_properties")
                     .putCompound("minecraft:icon", new CompoundTag()
                             .putString("texture", item.getTextureName() != null ? item.getTextureName() : item.getName()));
-        }else {
-            data.getCompound("components")
-                    .putCompound("minecraft:icon", new CompoundTag()
-                            .putString("texture", item.getTextureName() != null ? item.getTextureName() : item.getName()));
+        } else {
+            components.putCompound("minecraft:icon", new CompoundTag()
+                    .putString("texture", item.getTextureName() != null ? item.getTextureName() : item.getName()));
         }
 
         if (item.getTextureSize() != 16) {
@@ -93,7 +102,7 @@ public interface IItemCustom extends IItem {
             float scale3 = (float) (0.075 / (item.getTextureSize() / 16f * 2.4f));
 
             CompoundTag offsets;
-            if (protocol >= ProtocolInfo.v1_19_0) { //TODO 检查具体是哪个版本修改的
+            if (protocol >= ProtocolInfo.v1_19_0) {
                 offsets = new CompoundTag()
                         .putCompound("main_hand", new CompoundTag()
                                 .putCompound("first_person", xyzToCompoundTag(null, null, new Vector3f(scale3, scale3, scale3)))
@@ -102,7 +111,7 @@ public interface IItemCustom extends IItem {
                                 .putCompound("first_person", xyzToCompoundTag(null, null, new Vector3f(scale1, scale2, scale1)))
                                 .putCompound("third_person", xyzToCompoundTag(null, null, new Vector3f(scale1, scale2, scale1)))
                         );
-            }else {
+            } else {
                 offsets = new CompoundTag()
                         .putCompound("main_hand", new CompoundTag()
                                 .putCompound("first_person", xyzToCompoundTag(scale3, scale3, scale3))
@@ -110,11 +119,12 @@ public interface IItemCustom extends IItem {
                         ).putCompound("off_hand", new CompoundTag()
                                 .putCompound("first_person", xyzToCompoundTag(scale1, scale2, scale1))
                                 .putCompound("third_person", xyzToCompoundTag(scale1, scale2, scale1))
-                );
+                        );
             }
-            data.getCompound("components").putCompound("minecraft:render_offsets", offsets);
+            components.putCompound("minecraft:render_offsets", offsets);
         }
 
+        data.putCompound("components", components);
         return data;
     }
 

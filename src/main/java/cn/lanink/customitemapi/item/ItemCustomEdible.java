@@ -7,6 +7,7 @@ import cn.nukkit.item.food.Food;
 import cn.nukkit.level.Sound;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.ProtocolInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +43,7 @@ public abstract class ItemCustomEdible extends ItemEdible implements IItemCustom
 
     @Override
     public CompoundTag getComponentsData() {
-        return IItemCustom.getComponentsData(this);
+        return this.getComponentsData(ProtocolInfo.CURRENT_PROTOCOL);
     }
 
     @Override

@@ -2,6 +2,7 @@ package cn.lanink.customitemapi.item;
 
 import cn.nukkit.item.Item;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.ProtocolInfo;
 
 public abstract class ItemCustom extends Item implements IItemCustom {
 
@@ -32,7 +33,7 @@ public abstract class ItemCustom extends Item implements IItemCustom {
 
     @Override
     public CompoundTag getComponentsData() {
-        return IItemCustom.getComponentsData(this);
+        return this.getComponentsData(ProtocolInfo.CURRENT_PROTOCOL);
     }
 
     @Override

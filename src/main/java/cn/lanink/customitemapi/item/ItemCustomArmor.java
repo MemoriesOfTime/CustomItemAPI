@@ -2,6 +2,7 @@ package cn.lanink.customitemapi.item;
 
 import cn.nukkit.item.ItemArmor;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.network.protocol.ProtocolInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +35,7 @@ public abstract class ItemCustomArmor extends ItemArmor implements IItemCustom {
 
     @Override
     public CompoundTag getComponentsData() {
-        return IItemCustom.getComponentsData(this);
+        return this.getComponentsData(ProtocolInfo.CURRENT_PROTOCOL);
     }
 
     @Override
